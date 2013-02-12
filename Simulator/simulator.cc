@@ -24,6 +24,10 @@ unsigned int g_instruction_count = 0;
 ////////////////////////////////////////////////////////////////////////
 void SetConditionCodeInt(const int16_t val1, const int16_t val2) 
 {
+	int intValue = 2;
+	if (val1 < val2) intValue = 1;
+	if (val1 > val2) intValue = 4;
+	g_condition_code_register.int_value = intValue;
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -32,6 +36,10 @@ void SetConditionCodeInt(const int16_t val1, const int16_t val2)
 ////////////////////////////////////////////////////////////////////////
 void SetConditionCodeFloat(const float val1, const float val2) 
 {
+	float floatValue = 2;
+	if (val1 < val2) floatValue = 1;
+	if (val1 > val2) floatValue = 4;
+	g_condition_code_register.float_value = floatValue;
 }
 
 ////////////////////////////////////////////////////////////////////////
