@@ -462,6 +462,11 @@ int ExecuteInstruction(const TraceOp &trace_op)
     break;
 
     case OP_ADDI_F: {
+      float source_value_1 = g_scalar_registers[trace_op.scalar_registers[1]].float_value;
+      float source_value_2 = trace_op.float_value;
+      g_scalar_registers[trace_op.scalar_registers[0]].float_value =
+        source_value_1 + source_value_2;
+      SetConditionCodeFloat(g_scalar_registers[trace_op.scalar_registers[0]].float_value, 0);
     }
     break;
 
