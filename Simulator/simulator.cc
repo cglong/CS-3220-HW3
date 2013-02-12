@@ -297,6 +297,10 @@ TraceOp DecodeInstruction(const uint32_t instruction)
     break;
 
     case OP_MOVI_D: {
+      int destination_register_idx = (instruction & 0x000F0000) >> 16;
+      int immediate_value = SignExtension(instruction & 0x0000FFFF);
+      ret_trace_op.scalar_registers[0] = destination_register_idx;
+      ret_trace_op.int_value = immediate_value;
     }
     break;
 
@@ -521,6 +525,9 @@ int ExecuteInstruction(const TraceOp &trace_op)
     break;
 
     case OP_MOVI_D: {
+      int source_value = trace_op.int_value;
+      g_scalar_registers[trace_op.scalar_registers[0]].int_value = source_value;
+      SetConditionCodeInt(g_scalar_registers[trace_op.scalar_registers[0]].int_value, 0);
     }
     break;
 
