@@ -305,6 +305,10 @@ TraceOp DecodeInstruction(const uint32_t instruction)
     break;
 
     case OP_MOVI_F: {
+      int destination_register_idx = (instruction & 0x000F0000) >> 16;
+      float immediate_value = DecodeBinaryToFloatingPointNumber(instruction & 0x0000FFFF);
+      ret_trace_op.scalar_registers[0] = destination_register_idx;
+      ret_trace_op.float_value = immediate_value;
     }
     break;
 
@@ -532,6 +536,9 @@ int ExecuteInstruction(const TraceOp &trace_op)
     break;
 
     case OP_MOVI_F: {
+      float source_value = trace_op.float_value;
+      g_scalar_registers[trace_op.scalar_registers[0]].float_value = source_value;
+      SetConditionCodeFloat(g_scalar_registers[trace_op.scalar_registers[0]].float_value, 0);
     }
     break;
 
