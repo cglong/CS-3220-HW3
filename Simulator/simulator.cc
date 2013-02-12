@@ -530,9 +530,16 @@ int ExecuteInstruction(const TraceOp &trace_op)
     break;
 
     case OP_MOV: {
-      float source_value = g_scalar_registers[trace_op.scalar_registers[1]].float_value;
-      g_scalar_registers[trace_op.scalar_registers[0]].float_value = source_value;
-      SetConditionCodeFloat(g_scalar_registers[trace_op.scalar_registers[0]].int_value, 0);
+      int source_register_idx = trace_op.scalar_registers[1];
+      if (source_register_idx < 7) {
+        int source_value = g_scalar_registers[source_register_idx].int_value;
+        g_scalar_registers[trace_op.scalar_registers[0]].int_value = source_value;
+        SetConditionCodeInt(g_scalar_registers[trace_op.scalar_registers[0]].int_value, 0);
+      } else {
+        float source_value = g_scalar_registers[trace_op.scalar_registers[1]].float_value;
+        g_scalar_registers[trace_op.scalar_registers[0]].float_value = source_value;
+        SetConditionCodeFloat(g_scalar_registers[trace_op.scalar_registers[0]].int_value, 0);
+      }
     }
     break;
 
