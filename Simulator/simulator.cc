@@ -313,6 +313,10 @@ TraceOp DecodeInstruction(const uint32_t instruction)
     break;
 
     case OP_VMOV: {
+      int destination_register_idx = (instruction & 0x003F0000) >> 16;
+      int source_register_idx = (instruction & 0x00003F00) >> 8;
+      ret_trace_op.vector_registers[0] = destination_register_idx;
+      ret_trace_op.vector_registers[1] = source_register_idx;
     }
     break;
 
