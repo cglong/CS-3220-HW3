@@ -259,6 +259,12 @@ TraceOp DecodeInstruction(const uint32_t instruction)
     break;
 
     case OP_VADD: {
+      int destination_register_idx = (instruction & 0x003F0000) >> 16;
+      int source_register_1_idx = (instruction & 0x00003F00) >> 8;
+      int source_register_2_idx = instruction & 0x0000003F;
+      ret_trace_op.vector_registers[0] = destination_register_idx;
+      ret_trace_op.vector_registers[1] = source_register_1_idx;
+      ret_trace_op.vector_registers[2] = source_register_2_idx;
     }
     break;
 
@@ -460,6 +466,11 @@ int ExecuteInstruction(const TraceOp &trace_op)
     break;
 
     case OP_VADD: {
+      for (int i = 0; i < NUM_VECTOR_ELEMENTS; i++) {
+        g_vector_registers[trace_op.vector_registers[0]].element[i].float_value =
+          g_vector_registers[trace_op.vector_registers[1]].element[i].float_value +
+          g_vector_registers[trace_op.vector_registers[2]].element[i].float_value;
+      }
     }
     break;
 
