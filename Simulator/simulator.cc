@@ -321,6 +321,10 @@ TraceOp DecodeInstruction(const uint32_t instruction)
     break;
 
     case OP_VMOVI: {
+      int destination_register_idx = (instruction & 0x003F0000) >> 16;
+      float immediate_value = DecodeBinaryToFloatingPointNumber(instruction & 0x0000FFFF);
+      ret_trace_op.vector_registers[0] = destination_register_idx;
+      ret_trace_op.float_value = immediate_value;
     }
     break;
 
@@ -555,6 +559,10 @@ int ExecuteInstruction(const TraceOp &trace_op)
     break;
 
     case OP_VMOVI: {
+      for (int i = 0; i < NUM_VECTOR_ELEMENTS; i++) {
+        g_vector_registers[trace_op.vector_registers[0]].element[i].float_value =
+          trace_op.float_value;
+      }
     }
     break;
 
