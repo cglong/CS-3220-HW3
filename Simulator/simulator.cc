@@ -413,6 +413,7 @@ TraceOp DecodeInstruction(const uint32_t instruction)
 		int base_register_idx = (instruction & 0x000F0000) >> 16;
 		ret_trace_op.scalar_registers[0] = destination_register_idx;
     }
+    break;
 
     case OP_SETVERTEX: {
 		//nop
