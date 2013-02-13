@@ -337,58 +337,78 @@ TraceOp DecodeInstruction(const uint32_t instruction)
     break;
 
     case OP_CMP: {
+		int source_register_1_idx = (instruction & 0x000F0000) >> 16;
+		int source_register_2_idx = (instruction & 0x00000F00) >> 8;
+		ret_trace_op.scalar_registers[1] = source_register_1_idx;
+		ret_trace_op.scalar_registers[2] = source_register_2_idx;
     }
     break;
 
     case OP_CMPI: {
+		int source_register_idx_idx = (instruction & 0x000F0000) >> 16;
+		int offset = SignExtension(instruction & 0x0000FFFF);
+		ret_trace_op.scalar_registers[1] = source_register_idx_idx;
+		ret_trace_op.int_value = offset;
     }
     break;
 
     case OP_VCOMPMOV: {
+		int destination_register_idx = (instruction & 0x003F0000) >> 16;
+		int idx = (instruction 0x00C00000) >> 22;
+		int source_register_idx = (instruction & 0x00000F00) >> 8; 
+		ret_trace_op.scalar_registers[0] = destination_register_idx;
+		ret_trace_op.scalar_registers[1] = source_register_idx;
+		ret_trace_op.scalar_registers[2] = idx;
     }
     break;
 
     case OP_VCOMPMOVI: {
+		int destination_register_idx = (instruction & 0x003F0000) >> 16;
+		int idx = (instruction 0x00C00000) >> 22;
+		float immediate_value = DecodeBinaryToFloatingPointNumber(instruction & 0x0000FFFF);
+		ret_trace_op.scalar_registers[0] = destination_register_idx;
+		ret_trace_op.scalar_registers[2] = idx;
+		ret_trace_op.float_value = immediate_value;
     }
     break;
 
     case OP_LDB: {
 		int destinatino_register_idx = (instruction & 0x00F00000) >> 20;
 		int base_register_idx_idx = (instruction & 0x000F0000) >> 16;
-		int immediate_value = SignExtension(instruction & 0x0000FFFF);
+		int offset = SignExtension(instruction & 0x0000FFFF);
 		ret_trace_op.scalar_registers[0] = destination_register_idx;
 		ret_trace_op.scalar_registers[1] = base_register_idx_idx;
-		ret_trace_op.int_value = immediate_value;
+		ret_trace_op.int_value = offset;
     }
     break;
 
     case OP_LDW: {
 		int destinatino_register_idx = (instruction & 0x00F00000) >> 20;
 		int base_register_idx_idx = (instruction & 0x000F0000) >> 16;
-		int immediate_value = SignExtension(instruction & 0x0000FFFF);
+		int offset = SignExtension(instruction & 0x0000FFFF);
 		ret_trace_op.scalar_registers[0] = destination_register_idx;
 		ret_trace_op.scalar_registers[1] = base_register_idx_idx;
-		ret_trace_op.int_value = immediate_value;
+		ret_trace_op.int_value = offset;
     }
     break;
 
     case OP_STB: {
 		int source_register_idx = (instruction & 0x00F00000) >> 20;
 		int base_register_idx_idx = (instruction & 0x000F0000) >> 16;
-		int immediate_value = SignExtension(instruction & 0x0000FFFF);
+		int offset = SignExtension(instruction & 0x0000FFFF);
 		ret_trace_op.scalar_registers[0] = base_register_idx;
 		ret_trace_op.scalar_registers[1] = source_register_idx_idx;
-		ret_trace_op.int_value = immediate_value;
+		ret_trace_op.int_value = offset;
     }
     break;
 
     case OP_STW: {
 		int source_register_idx = (instruction & 0x00F00000) >> 20;
 		int base_register_idx_idx = (instruction & 0x000F0000) >> 16;
-		int immediate_value = SignExtension(instruction & 0x0000FFFF);
+		int offset = SignExtension(instruction & 0x0000FFFF);
 		ret_trace_op.scalar_registers[0] = base_register_idx;
 		ret_trace_op.scalar_registers[1] = source_register_idx_idx;
-		ret_trace_op.int_value = immediate_value;
+		ret_trace_op.int_value = offset;
     }
     break;
 
