@@ -353,18 +353,42 @@ TraceOp DecodeInstruction(const uint32_t instruction)
     break;
 
     case OP_LDB: {
+		int destinatino_register_idx = (instruction & 0x00F00000) >> 20;
+		int base_register_idx_idx = (instruction & 0x000F0000) >> 16;
+		int immediate_value = SignExtension(instruction & 0x0000FFFF);
+		ret_trace_op.scalar_registers[0] = destination_register_idx;
+		ret_trace_op.scalar_registers[1] = base_register_idx_idx;
+		ret_trace_op.int_value = immediate_value;
     }
     break;
 
     case OP_LDW: {
+		int destinatino_register_idx = (instruction & 0x00F00000) >> 20;
+		int base_register_idx_idx = (instruction & 0x000F0000) >> 16;
+		int immediate_value = SignExtension(instruction & 0x0000FFFF);
+		ret_trace_op.scalar_registers[0] = destination_register_idx;
+		ret_trace_op.scalar_registers[1] = base_register_idx_idx;
+		ret_trace_op.int_value = immediate_value;
     }
     break;
 
     case OP_STB: {
+		int source_register_idx = (instruction & 0x00F00000) >> 20;
+		int base_register_idx_idx = (instruction & 0x000F0000) >> 16;
+		int immediate_value = SignExtension(instruction & 0x0000FFFF);
+		ret_trace_op.scalar_registers[0] = base_register_idx;
+		ret_trace_op.scalar_registers[1] = source_register_idx_idx;
+		ret_trace_op.int_value = immediate_value;
     }
     break;
 
     case OP_STW: {
+		int source_register_idx = (instruction & 0x00F00000) >> 20;
+		int base_register_idx_idx = (instruction & 0x000F0000) >> 16;
+		int immediate_value = SignExtension(instruction & 0x0000FFFF);
+		ret_trace_op.scalar_registers[0] = base_register_idx;
+		ret_trace_op.scalar_registers[1] = source_register_idx_idx;
+		ret_trace_op.int_value = immediate_value;
     }
     break;
 
@@ -471,7 +495,7 @@ TraceOp DecodeInstruction(const uint32_t instruction)
     break;
 
     case OP_BRZP: {
-	int pc_offset = SignExtension(instruction & 0x0000FFFF);
+		int pc_offset = SignExtension(instruction & 0x0000FFFF);
 		ret_trace_op.int_value = pc_offset;
     }
     break;
