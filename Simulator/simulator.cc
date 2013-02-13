@@ -707,7 +707,18 @@ int ExecuteInstruction(const TraceOp &trace_op)
     break;
 
     case OP_LDW: {
-		
+        int destination_register_idx = ret_trace_op.scalar_registers[0];
+        int base_register_idx = ret_trace_op.scalar_registers[1];
+        int offset = ret_trace_op.int_value;
+        if (source_register_idx < 7) {
+            g_scalar_registers[destinaton_register_idx].int_value = g_memory[base_register_idx + offset] << 8;
+            g_scalar_registers[destination_register_idx].int_value &= g_memory[base_register_idx + offset + 1];
+            SetConditionCodeInt(source_register_idx].int_value, 0);
+        } else {
+            g_scalar_registers[destinaton_register_idx].float_value = g_memory[base_register_idx + offset] << 8;
+            g_scalar_registers[destination_register_idx].float_value &= g_memory[base_register_idx + offset + 1];
+            SetConditionCodeFloat(source_register_idx].float_value, 0);
+        }
     }
     break;
 
