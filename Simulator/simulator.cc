@@ -940,8 +940,7 @@ int ExecuteInstruction(const TraceOp &trace_op)
     break;
 
     case OP_JSR: {
-		g_scalar_registers[7] = PC_IDX;
-		ret_next_instruction_idx = PC_IDX + trace_op.int_value << 2;
+		ret_next_instruction_idx = trace_op.int_value;
     }
     break;
 
