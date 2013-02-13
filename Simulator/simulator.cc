@@ -727,12 +727,13 @@ int ExecuteInstruction(const TraceOp &trace_op)
     break;
 
     case OP_JMP: {
-		ret_next_instruction_idx = trace_op.int_value;
+		ret_next_instruction_idx = trace_op.scalar_registers[0];
     }
     break;
 
     case OP_JSRR: {
-		ret_next_instruction_idx = trace_op.int_value;
+		g_scalar_registers[7] = PC_IDX;
+		ret_next_instruction_idx = trace_op.scalar_registers[0];
     }
     break;
 
@@ -909,7 +910,8 @@ int ExecuteInstruction(const TraceOp &trace_op)
     break;
 
     case OP_JSR: {
-		ret_next_instruction_idx = trace_op.int_value;
+		g_scalar_registers[7] = PC_IDX;
+		ret_next_instruction_idx = PC_IDX + trace_op.int_value << 2;
     }
     break;
 
