@@ -680,7 +680,10 @@ int ExecuteInstruction(const TraceOp &trace_op)
     break;
 
     case OP_VCOMPMOV: {
-	
+        int source_register_idx = trace_op.scalar_registers[1];
+        float value = source_register_idx < 7 ? source_register_idx.int_value : source_register_idx.float_value;
+        int idx = trace_op.scalar_registers[2];
+        g_vector_registers[trace_op.vector_registers[0]].element[idx].float_value = value;
     }
     break;
 
