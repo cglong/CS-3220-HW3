@@ -356,7 +356,7 @@ TraceOp DecodeInstruction(const uint32_t instruction)
 
     case OP_VCOMPMOV: {
 		int destination_register_idx = (instruction & 0x003F0000) >> 16;
-		int idx = (instruction 0x00C00000) >> 22;
+		int idx = (instruction & 0x00C00000) >> 22;
 		int source_register_idx = (instruction & 0x00000F00) >> 8; 
 		ret_trace_op.scalar_registers[0] = destination_register_idx;
 		ret_trace_op.scalar_registers[1] = source_register_idx;
@@ -366,7 +366,7 @@ TraceOp DecodeInstruction(const uint32_t instruction)
 
     case OP_VCOMPMOVI: {
 		int destination_register_idx = (instruction & 0x003F0000) >> 16;
-		int idx = (instruction 0x00C00000) >> 22;
+		int idx = (instruction & 0x00C00000) >> 22;
 		float immediate_value = DecodeBinaryToFloatingPointNumber(instruction & 0x0000FFFF);
 		ret_trace_op.scalar_registers[0] = destination_register_idx;
 		ret_trace_op.int_value = idx;
@@ -396,10 +396,10 @@ TraceOp DecodeInstruction(const uint32_t instruction)
 
     case OP_STB: {
 		int source_register_idx = (instruction & 0x00F00000) >> 20;
-		int base_register_idx_idx = (instruction & 0x000F0000) >> 16;
+		int base_register_idx = (instruction & 0x000F0000) >> 16;
 		int offset = SignExtension(instruction & 0x0000FFFF);
 		ret_trace_op.scalar_registers[0] = base_register_idx;
-		ret_trace_op.scalar_registers[1] = source_register_idx_idx;
+		ret_trace_op.scalar_registers[1] = source_register_idx;
 		ret_trace_op.int_value = offset;
     }
     break;
@@ -451,13 +451,13 @@ TraceOp DecodeInstruction(const uint32_t instruction)
 
     case OP_JMP: {
 		int base_register_idx = (instruction & 0x000F0000) >> 16;
-		ret_trace_op.scalar_registers[0] = destination_register_idx;
+		ret_trace_op.scalar_registers[0] = base_register_idx;
     }
     break;
 
     case OP_JSRR: {
 		int base_register_idx = (instruction & 0x000F0000) >> 16;
-		ret_trace_op.scalar_registers[0] = destination_register_idx;
+		ret_trace_op.scalar_registers[0] = base_register_idx;
     }
     break;
 
@@ -663,7 +663,7 @@ int ExecuteInstruction(const TraceOp &trace_op)
 		int source_register_1_idx = trace_op.scalar_registers[1];
 		int source_register_2_idx = trace_op.scalar_registers[2];
 		if (source_register_1_idx < 7 && source_register_2_idx < 7) 
-			SetConditionCodeInt(source_register_1_idx].int_value, g_scalar_registers[source_register_2_idx].int_value);
+			SetConditionCodeInt(g_scalar_registers[source_register_1_idx].int_value, g_scalar_registers[source_register_2_idx].int_value);
 		else
 			SetConditionCodeFloat(g_scalar_registers[source_register_1_idx].float_value, g_scalar_registers[source_register_2_idx].float_value);
     }
@@ -673,7 +673,7 @@ int ExecuteInstruction(const TraceOp &trace_op)
 		int source_register_idx = trace_op.scalar_registers[1];
 		int offset = trace_op.int_value;
 		if (source_register_idx < 7)
-			SetConditionCodeInt(source_register_idx].int_value, offset);
+			SetConditionCodeInt(g_scalar_registers[source_register_idx].int_value, offset);
 		else 
 			SetConditionCodeFloat(g_scalar_registers[source_register_idx].float_value, offset);
     }
@@ -697,10 +697,10 @@ int ExecuteInstruction(const TraceOp &trace_op)
     break;
 
     case OP_LDB: {
-		int destination_register_idx = ret_trace_op.scalar_registers[0];
-		int base_register_idx = ret_trace_op.scalar_registers[1];
-		int offset = ret_trace_op.int_value;
-		if (source_register_idx < 7)
+		int destination_register_idx = trace_op.scalar_registers[0];
+		int base_register_idx = trace_op.scalar_registers[1];
+		int offset = trace_op.int_value;
+		if (base_register_idx < 7)
 			g_scalar_registers[destination_register_idx].int_value = g_memory[base_register_idx + offset];
 		else
 			g_scalar_registers[destination_register_idx].float_value = g_memory[base_register_idx + offset];
@@ -708,44 +708,44 @@ int ExecuteInstruction(const TraceOp &trace_op)
     break;
 
     case OP_LDW: {
-        int destination_register_idx = ret_trace_op.scalar_registers[0];
-        int base_register_idx = ret_trace_op.scalar_registers[1];
-        int offset = ret_trace_op.int_value;
-        if (source_register_idx < 7) {
-            g_scalar_registers[destinaton_register_idx].int_value = g_memory[base_register_idx + offset] << 8;
-            g_scalar_registers[destination_register_idx].int_value &= g_memory[base_register_idx + offset + 1];
-            SetConditionCodeInt(source_register_idx].int_value, 0);
+        int destination_register_idx = trace_op.scalar_registers[0];
+        int base_register_idx = trace_op.scalar_registers[1];
+        int offset = trace_op.int_value;
+        if (base_register_idx < 7) {
+            g_scalar_registers[destination_register_idx].int_value = g_memory[base_register_idx + offset] << 8;
+//            g_scalar_registers[destination_register_idx].int_value &= g_memory[base_register_idx + offset + 1];
+            SetConditionCodeInt(g_scalar_registers[base_register_idx].int_value, 0);
         } else {
-            g_scalar_registers[destinaton_register_idx].float_value = g_memory[base_register_idx + offset] << 8;
-            g_scalar_registers[destination_register_idx].float_value &= g_memory[base_register_idx + offset + 1];
-            SetConditionCodeFloat(source_register_idx].float_value, 0);
+            g_scalar_registers[destination_register_idx].float_value = g_memory[base_register_idx + offset] << 8;
+//            g_scalar_registers[destination_register_idx].float_value &= g_memory[base_register_idx + offset + 1];
+            SetConditionCodeFloat(g_scalar_registers[base_register_idx].float_value, 0);
         }
     }
     break;
 
     case OP_STB: {
-		int base_register_idx = ret_trace_op.scalar_registers[0];
-		int source_register_idx = ret_trace_op.scalar_registers[1];
-		int offset = ret_trace_op.int_value;
+		int base_register_idx = trace_op.scalar_registers[0];
+		int source_register_idx = trace_op.scalar_registers[1];
+		int offset = trace_op.int_value;
 		if (source_register_idx < 7)
 			g_memory[base_register_idx + offset] = g_scalar_registers[source_register_idx].int_value;
-		else
-			g_memory[base_register_idx + offset] = g_scalar_registers[source_register_idx].float_value;
+	//	else
+		//	g_memory[base_register_idx + offset] = g_scalar_registers[source_register_idx].float_value;
     }
     break;
 
     case OP_STW: {
-		int base_register_idx = ret_trace_op.scalar_registers[0];
-		int source_register_idx = ret_trace_op.scalar_registers[1];
-		int offset = ret_trace_op.int_value;
+		int base_register_idx = trace_op.scalar_registers[0];
+		int source_register_idx = trace_op.scalar_registers[1];
+		int offset = trace_op.int_value;
 		if (source_register_idx < 7) {
 			g_memory[base_register_idx + offset] = g_scalar_registers[source_register_idx].int_value << 8;
 			g_memory[base_register_idx + offset + 1] &= g_scalar_registers[source_register_idx].int_value;
-			SetConditionCodeInt(source_register_idx].int_value, 0);
+			SetConditionCodeInt(g_scalar_registers[source_register_idx].int_value, 0);
 		} else {
-			g_memory[base_register_idx + offset] = g_scalar_registers[source_register_idx].float_value << 8;
-			g_memory[base_register_idx + offset + 1] = g_scalar_registers[source_register_idx].float_value << 8;
-			SetConditionCodeFloat(source_register_idx].float_value, 0);
+//			g_memory[base_register_idx + offset] = g_scalar_registers[source_register_idx].float_value << 8;
+//			g_memory[base_register_idx + offset + 1] = g_scalar_registers[source_register_idx].float_value << 8;
+			SetConditionCodeFloat(g_scalar_registers[source_register_idx].float_value, 0);
 		}
     }
     break;
@@ -791,7 +791,6 @@ int ExecuteInstruction(const TraceOp &trace_op)
     break;
 
     case OP_JSRR: {
-		g_scalar_registers[7] = PC_IDX;
 		ret_next_instruction_idx = trace_op.scalar_registers[0];
     }
     break;
@@ -831,7 +830,7 @@ int ExecuteInstruction(const TraceOp &trace_op)
 			}
 		}
 		
-		if (g_condition_code_register.integer_value < 0) {
+		if (g_condition_code_register.int_value < 0) {
 			if (g_condition_code_register.float_value == 1.0) {
 				ret_next_instruction_idx = PC_IDX + trace_op.int_value << 2;
 			}
@@ -852,7 +851,7 @@ int ExecuteInstruction(const TraceOp &trace_op)
 			}
 		}
 		
-		if (g_condition_code_register.integer_value < 0) {
+		if (g_condition_code_register.int_value < 0) {
 			if (g_condition_code_register.float_value == 2.0) {
 				ret_next_instruction_idx = PC_IDX + trace_op.int_value << 2;
 			}
@@ -873,7 +872,7 @@ int ExecuteInstruction(const TraceOp &trace_op)
 			}
 		}
 		
-		if (g_condition_code_register.integer_value < 0) {
+		if (g_condition_code_register.int_value < 0) {
 			if (g_condition_code_register.float_value == 4.0) {
 				ret_next_instruction_idx = PC_IDX + trace_op.int_value << 2;
 			}
@@ -894,7 +893,7 @@ int ExecuteInstruction(const TraceOp &trace_op)
 			}
 		}
 		
-		if (g_condition_code_register.integer_value < 0) {
+		if (g_condition_code_register.int_value < 0) {
 			if (g_condition_code_register.float_value == 1.0 || g_condition_code_register.float_value == 2.0) {
 				ret_next_instruction_idx = PC_IDX + trace_op.int_value << 2;
 			}
@@ -915,7 +914,7 @@ int ExecuteInstruction(const TraceOp &trace_op)
 			}
 		}
 		
-		if (g_condition_code_register.integer_value < 0) {
+		if (g_condition_code_register.int_value < 0) {
 			if (g_condition_code_register.float_value == 1.0 || g_condition_code_register.float_value == 4.0) {
 				ret_next_instruction_idx = PC_IDX + trace_op.int_value << 2;
 			}
@@ -936,7 +935,7 @@ int ExecuteInstruction(const TraceOp &trace_op)
 			}
 		}
 		
-		if (g_condition_code_register.integer_value < 0) {
+		if (g_condition_code_register.int_value < 0) {
 			if (g_condition_code_register.float_value == 2.0 || g_condition_code_register.float_value == 4.0) {
 				ret_next_instruction_idx = PC_IDX + trace_op.int_value << 2;
 			}
@@ -957,7 +956,7 @@ int ExecuteInstruction(const TraceOp &trace_op)
 			}
 		}
 		
-		if (g_condition_code_register.integer_value < 0) {
+		if (g_condition_code_register.int_value < 0) {
 			if (g_condition_code_register.float_value == 1.0 || g_condition_code_register.float_value == 2.0 || g_condition_code_register.float_value == 4.0) {
 				ret_next_instruction_idx = PC_IDX + trace_op.int_value << 2;
 			}
