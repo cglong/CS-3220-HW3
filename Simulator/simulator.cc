@@ -369,7 +369,7 @@ TraceOp DecodeInstruction(const uint32_t instruction)
 		int idx = (instruction 0x00C00000) >> 22;
 		float immediate_value = DecodeBinaryToFloatingPointNumber(instruction & 0x0000FFFF);
 		ret_trace_op.scalar_registers[0] = destination_register_idx;
-		ret_trace_op.scalar_registers[2] = idx;
+		ret_trace_op.int_value = idx;
 		ret_trace_op.float_value = immediate_value;
     }
     break;
@@ -688,7 +688,10 @@ int ExecuteInstruction(const TraceOp &trace_op)
     break;
 
     case OP_VCOMPMOVI: {
-	
+        int destination_register_idx = trace_op.scalar_registers[0];
+        int idx = trace_op.int_value;
+        float immediate_value = trace_op.float_value;
+        g_vector_registers[trace_op.vector_registers[0]].element[idx].float_value = immediate_value;
     }
     break;
 
