@@ -549,8 +549,8 @@ TraceOp DecodeInstruction(const uint32_t instruction)
 int ExecuteInstruction(const TraceOp &trace_op) 
 {
   int ret_next_instruction_idx = -1;
-
   uint8_t opcode = trace_op.opcode;
+  
   switch (opcode) {
     case OP_ADD_D: {
       int source_value_1 = g_scalar_registers[trace_op.scalar_registers[1]].int_value;
@@ -660,34 +660,52 @@ int ExecuteInstruction(const TraceOp &trace_op)
     break;
 
     case OP_CMP: {
+		int source_register_1_idx = trace_op.scalar_registers[1];
+		int source_register_2_idx = trace_op.scalar_registers[2];
+		if (source_register_1_idx < 7 && source_register_2_idx < 7) 
+			SetConditionCodeInt(g_scalar_registers[trace_op.scalar_registers[1]].int_value, g_scalar_registers[trace_op.scalar_registers[2]].int_value);
+		else
+			SetConditionCodeFloat(g_scalar_registers[trace_op.scalar_registers[1]].float_value, g_scalar_registers[trace_op.scalar_registers[2]].float_value);
     }
     break;
 
     case OP_CMPI: {
+		int source_register_idx = trace_op.scalar_registers[1];
+		int offset = trace_op.int_value;
+		if (source_register_idx < 7)
+			SetConditionCodeInt(g_scalar_registers[trace_op.scalar_registers[1]].int_value, offset);
+		else 
+			SetConditionCodeFloat(g_scalar_registers[trace_op.scalar_registers[1]].float_value, offset);
     }
     break;
 
     case OP_VCOMPMOV: {
+	
     }
     break;
 
     case OP_VCOMPMOVI: {
+	
     }
     break;
 
     case OP_LDB: {
+	
     }
     break;
 
     case OP_LDW: {
+	
     }
     break;
 
     case OP_STB: {
+	
     }
     break;
 
     case OP_STW: {
+		
     }
     break;
 
