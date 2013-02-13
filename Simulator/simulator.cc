@@ -681,7 +681,8 @@ int ExecuteInstruction(const TraceOp &trace_op)
 
     case OP_VCOMPMOV: {
         int source_register_idx = trace_op.scalar_registers[1];
-        float value = source_register_idx < 7 ? source_register_idx.int_value : source_register_idx.float_value;
+        float value = source_register_idx < 7 ? g_scalar_registers[source_register_idx].int_value :
+          g_scalar_registers[source_register_idx].float_value;
         int idx = trace_op.scalar_registers[2];
         g_vector_registers[trace_op.vector_registers[0]].element[idx].float_value = value;
     }
@@ -691,7 +692,7 @@ int ExecuteInstruction(const TraceOp &trace_op)
         int destination_register_idx = trace_op.scalar_registers[0];
         int idx = trace_op.int_value;
         float immediate_value = trace_op.float_value;
-        g_vector_registers[trace_op.vector_registers[0]].element[idx].float_value = immediate_value;
+        g_vector_registers[trace_op.vector_registers[destination_register_idx]].element[idx].float_value = immediate_value;
     }
     break;
 
