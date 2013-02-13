@@ -41,7 +41,7 @@ void SetConditionCodeFloat(const float val1, const float val2)
 	if (val1 < val2) floatValue = 1.0;
 	if (val1 > val2) floatValue = 4.0;
 	g_condition_code_register.float_value = floatValue;
-	g_condition_code_register.int_value = -1.0;
+	g_condition_code_register.int_value = -1;
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -375,7 +375,7 @@ TraceOp DecodeInstruction(const uint32_t instruction)
     break;
 
     case OP_LDB: {
-		int destinatino_register_idx = (instruction & 0x00F00000) >> 20;
+		int destination_register_idx = (instruction & 0x00F00000) >> 20;
 		int base_register_idx_idx = (instruction & 0x000F0000) >> 16;
 		int offset = SignExtension(instruction & 0x0000FFFF);
 		ret_trace_op.scalar_registers[0] = destination_register_idx;
@@ -385,7 +385,7 @@ TraceOp DecodeInstruction(const uint32_t instruction)
     break;
 
     case OP_LDW: {
-		int destinatino_register_idx = (instruction & 0x00F00000) >> 20;
+		int destination_register_idx = (instruction & 0x00F00000) >> 20;
 		int base_register_idx_idx = (instruction & 0x000F0000) >> 16;
 		int offset = SignExtension(instruction & 0x0000FFFF);
 		ret_trace_op.scalar_registers[0] = destination_register_idx;
@@ -408,8 +408,8 @@ TraceOp DecodeInstruction(const uint32_t instruction)
 		int source_register_idx = (instruction & 0x00F00000) >> 20;
 		int base_register_idx_idx = (instruction & 0x000F0000) >> 16;
 		int offset = SignExtension(instruction & 0x0000FFFF);
-		ret_trace_op.scalar_registers[0] = base_register_idx;
-		ret_trace_op.scalar_registers[1] = source_register_idx_idx;
+		ret_trace_op.scalar_registers[0] = base_register_idx_idx;
+		ret_trace_op.scalar_registers[1] = source_register_idx;
 		ret_trace_op.int_value = offset;
     }
     break;
@@ -663,9 +663,9 @@ int ExecuteInstruction(const TraceOp &trace_op)
 		int source_register_1_idx = trace_op.scalar_registers[1];
 		int source_register_2_idx = trace_op.scalar_registers[2];
 		if (source_register_1_idx < 7 && source_register_2_idx < 7) 
-			SetConditionCodeInt(g_scalar_registers[trace_op.scalar_registers[1]].int_value, g_scalar_registers[trace_op.scalar_registers[2]].int_value);
+			SetConditionCodeInt(source_register_1_idx].int_value, g_scalar_registers[source_register_2_idx].int_value);
 		else
-			SetConditionCodeFloat(g_scalar_registers[trace_op.scalar_registers[1]].float_value, g_scalar_registers[trace_op.scalar_registers[2]].float_value);
+			SetConditionCodeFloat(g_scalar_registers[source_register_1_idx].float_value, g_scalar_registers[source_register_2_idx].float_value);
     }
     break;
 
@@ -673,9 +673,9 @@ int ExecuteInstruction(const TraceOp &trace_op)
 		int source_register_idx = trace_op.scalar_registers[1];
 		int offset = trace_op.int_value;
 		if (source_register_idx < 7)
-			SetConditionCodeInt(g_scalar_registers[trace_op.scalar_registers[1]].int_value, offset);
+			SetConditionCodeInt(source_register_idx].int_value, offset);
 		else 
-			SetConditionCodeFloat(g_scalar_registers[trace_op.scalar_registers[1]].float_value, offset);
+			SetConditionCodeFloat(g_scalar_registers[source_register_idx].float_value, offset);
     }
     break;
 
@@ -690,17 +690,29 @@ int ExecuteInstruction(const TraceOp &trace_op)
     break;
 
     case OP_LDB: {
-	
+		int destination_register_idx = ret_trace_op.scalar_registers[0];
+		int base_register_idx = ret_trace_op.scalar_registers[1];
+		int offset = ret_trace_op.int_value;
+		if (source_register_idx < 7)
+			g_scalar_registers[destination_register_idx].int_value = g_memory[base_register_idx + offset];
+		else
+			g_scalar_registers[destination_register_idx].float_value = g_memory[base_register_idx + offset];
     }
     break;
 
     case OP_LDW: {
-	
+		
     }
     break;
 
     case OP_STB: {
-	
+		int base_register_idx = ret_trace_op.scalar_registers[0];
+		int source_register_idx = ret_trace_op.scalar_registers[1];
+		int offset = ret_trace_op.int_value;
+		if (source_register_idx < 7)
+			g_memory[base_register_idx + offset] = g_scalar_registers[source_register_idx].int_value;
+		else
+			g_memory[base_register_idx + offset] = g_scalar_registers[source_register_idx].float_value;
     }
     break;
 
