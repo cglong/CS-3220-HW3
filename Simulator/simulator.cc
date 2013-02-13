@@ -28,6 +28,7 @@ void SetConditionCodeInt(const int16_t val1, const int16_t val2)
 	if (val1 < val2) intValue = 1;
 	if (val1 > val2) intValue = 4;
 	g_condition_code_register.int_value = intValue;
+	g_condition_code_register.float_value = -1;
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -36,10 +37,11 @@ void SetConditionCodeInt(const int16_t val1, const int16_t val2)
 ////////////////////////////////////////////////////////////////////////
 void SetConditionCodeFloat(const float val1, const float val2) 
 {
-	float floatValue = 2;
-	if (val1 < val2) floatValue = 1;
-	if (val1 > val2) floatValue = 4;
+	float floatValue = 2.0;
+	if (val1 < val2) floatValue = 1.0;
+	if (val1 > val2) floatValue = 4.0;
 	g_condition_code_register.float_value = floatValue;
+	g_condition_code_register.int_value = -1.0;
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -725,10 +727,12 @@ int ExecuteInstruction(const TraceOp &trace_op)
     break;
 
     case OP_JMP: {
+		ret_next_instruction_idx = trace_op.int_value;
     }
     break;
 
     case OP_JSRR: {
+		ret_next_instruction_idx = trace_op.int_value;
     }
     break;
 
@@ -743,7 +747,7 @@ int ExecuteInstruction(const TraceOp &trace_op)
     break;
 
     case OP_ROTATE: {
-		//npo
+		//nop
     }
     break;
 
@@ -758,35 +762,154 @@ int ExecuteInstruction(const TraceOp &trace_op)
     break;
 
     case OP_BRN: {
+		if (g_condition_code_register.float_value < 0) {
+			if (g_condition_code_register.int_value == 1) {
+				ret_next_instruction_idx = PC_IDX + trace_op.int_value << 2;
+			}
+			else {
+				ret_next_instruction_idx = PC_IDX;
+			}
+		}
+		
+		if (g_condition_code_register.integer_value < 0) {
+			if (g_condition_code_register.float_value == 1.0) {
+				ret_next_instruction_idx = PC_IDX + trace_op.int_value << 2;
+			}
+			else {
+				ret_next_instruction_idx = PC_IDX;
+			}
+		}
     }
     break;
 
     case OP_BRZ: {
+		if (g_condition_code_register.float_value < 0) {
+			if (g_condition_code_register.int_value == 2) {
+				ret_next_instruction_idx = PC_IDX + trace_op.int_value << 2;
+			}
+			else {
+				ret_next_instruction_idx = PC_IDX;
+			}
+		}
+		
+		if (g_condition_code_register.integer_value < 0) {
+			if (g_condition_code_register.float_value == 2.0) {
+				ret_next_instruction_idx = PC_IDX + trace_op.int_value << 2;
+			}
+			else {
+				ret_next_instruction_idx = PC_IDX;
+			}
+		}
     }
     break;
 
     case OP_BRP: {
+		if (g_condition_code_register.float_value < 0) {
+			if (g_condition_code_register.int_value == 4) {
+				ret_next_instruction_idx = PC_IDX + trace_op.int_value << 2;
+			}
+			else {
+				ret_next_instruction_idx = PC_IDX;
+			}
+		}
+		
+		if (g_condition_code_register.integer_value < 0) {
+			if (g_condition_code_register.float_value == 4.0) {
+				ret_next_instruction_idx = PC_IDX + trace_op.int_value << 2;
+			}
+			else {
+				ret_next_instruction_idx = PC_IDX;
+			}
+		}
     }
     break;
 
     case OP_BRNZ: {
+		if (g_condition_code_register.float_value < 0) {
+			if (g_condition_code_register.int_value == 1 || g_condition_code_register.int_value == 2) {
+				ret_next_instruction_idx = PC_IDX + trace_op.int_value << 2;
+			}
+			else {
+				ret_next_instruction_idx = PC_IDX;
+			}
+		}
+		
+		if (g_condition_code_register.integer_value < 0) {
+			if (g_condition_code_register.float_value == 1.0 || g_condition_code_register.float_value == 2.0) {
+				ret_next_instruction_idx = PC_IDX + trace_op.int_value << 2;
+			}
+			else {
+				ret_next_instruction_idx = PC_IDX;
+			}
+		}
     }
     break;
 
     case OP_BRNP: {
+		if (g_condition_code_register.float_value < 0) {
+			if (g_condition_code_register.int_value == 1 || g_condition_code_register.int_value == 4) {
+				ret_next_instruction_idx = PC_IDX + trace_op.int_value << 2;
+			}
+			else {
+				ret_next_instruction_idx = PC_IDX;
+			}
+		}
+		
+		if (g_condition_code_register.integer_value < 0) {
+			if (g_condition_code_register.float_value == 1.0 || g_condition_code_register.float_value == 4.0) {
+				ret_next_instruction_idx = PC_IDX + trace_op.int_value << 2;
+			}
+			else {
+				ret_next_instruction_idx = PC_IDX;
+			}
+		}
     }
     break;
 
     case OP_BRZP: {
+		if (g_condition_code_register.float_value < 0) {
+			if (g_condition_code_register.int_value == 2 || g_condition_code_register.int_value == 4) {
+				ret_next_instruction_idx = PC_IDX + trace_op.int_value << 2;
+			}
+			else {
+				ret_next_instruction_idx = PC_IDX;
+			}
+		}
+		
+		if (g_condition_code_register.integer_value < 0) {
+			if (g_condition_code_register.float_value == 2.0 || g_condition_code_register.float_value == 4.0) {
+				ret_next_instruction_idx = PC_IDX + trace_op.int_value << 2;
+			}
+			else {
+				ret_next_instruction_idx = PC_IDX;
+			}
+		}
     }
     break;
 
     case OP_BRNZP: {
+		if (g_condition_code_register.float_value < 0) {
+			if (g_condition_code_register.int_value == 1 || g_condition_code_register.int_value == 2 || g_condition_code_register.int_value == 4) {
+				ret_next_instruction_idx = PC_IDX + trace_op.int_value << 2;
+			}
+			else {
+				ret_next_instruction_idx = PC_IDX;
+			}
+		}
+		
+		if (g_condition_code_register.integer_value < 0) {
+			if (g_condition_code_register.float_value == 1.0 || g_condition_code_register.float_value == 2.0 || g_condition_code_register.float_value == 4.0) {
+				ret_next_instruction_idx = PC_IDX + trace_op.int_value << 2;
+			}
+			else {
+				ret_next_instruction_idx = PC_IDX;
+			}
+		}
     }
     break;
 
     case OP_JSR: {
-      ret_next_instruction_idx = trace_op.int_value;
+		ret_next_instruction_idx = trace_op.int_value;
     }
     break;
 
