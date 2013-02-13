@@ -440,30 +440,44 @@ TraceOp DecodeInstruction(const uint32_t instruction)
     break;
 
     case OP_BRN: {
+		int pc_offset = SignExtension(instruction & 0x0000FFFF);
+		ret_trace_op.int_value = pc_offset;
     }
     break;
 
     case OP_BRZ: {
+		int pc_offset = SignExtension(instruction & 0x0000FFFF);
+		ret_trace_op.int_value = pc_offset;
     }
     break;
 
     case OP_BRP: {
+		int pc_offset = SignExtension(instruction & 0x0000FFFF);
+		ret_trace_op.int_value = pc_offset;
     }
     break;
 
     case OP_BRNZ: {
+		int pc_offset = SignExtension(instruction & 0x0000FFFF);
+		ret_trace_op.int_value = pc_offset;
     }
     break;
 
     case OP_BRNP: {
+		int pc_offset = SignExtension(instruction & 0x0000FFFF);
+		ret_trace_op.int_value = pc_offset;
     }
     break;
 
     case OP_BRZP: {
+	int pc_offset = SignExtension(instruction & 0x0000FFFF);
+		ret_trace_op.int_value = pc_offset;
     }
     break;
 
     case OP_BRNZP: {
+		int pc_offset = SignExtension(instruction & 0x0000FFFF);
+		ret_trace_op.int_value = pc_offset;
     }
     break;
 
@@ -631,30 +645,37 @@ int ExecuteInstruction(const TraceOp &trace_op)
     break;
 
     case OP_PUSHMATRIX: {
+		//nop
     }
     break;
 
     case OP_POPMATRIX: {
+		//nop
     }
     break;
 
     case OP_ENDPRIMITIVE: {
+		//nop
     }
     break;
 
     case OP_LOADIDENTITY: {
+		//nop
     }
     break;
 
     case OP_FLUSH: {
+		//nop
     }
     break;
 
     case OP_DRAW: {
+		//nop
     }  
     break;
 
     case OP_BEGINPRIMITIVE: {
+		//nop
     }
     break;
 
@@ -667,22 +688,27 @@ int ExecuteInstruction(const TraceOp &trace_op)
     break;
 
     case OP_SETVERTEX: {
+		//nop
     }
     break;
 
     case OP_SETCOLOR: {
+		//nop
     }
     break;
 
     case OP_ROTATE: {
+		//npo
     }
     break;
 
     case OP_TRANSLATE: {
+		//nop
     }
     break;
 
     case OP_SCALE: {
+		//nop
     }
     break;
 
