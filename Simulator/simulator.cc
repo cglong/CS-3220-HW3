@@ -720,11 +720,11 @@ int ExecuteInstruction(const TraceOp &trace_op)
         int offset = trace_op.int_value;
         if (base_register_idx < 7) {
             g_scalar_registers[destination_register_idx].int_value = g_memory[base_register_idx + offset] << 8;
-//            g_scalar_registers[destination_register_idx].int_value &= g_memory[base_register_idx + offset + 1];
+              g_scalar_registers[destination_register_idx].int_value += g_memory[base_register_idx + offset + 1];
             SetConditionCodeInt(g_scalar_registers[base_register_idx].int_value, 0);
         } else {
             g_scalar_registers[destination_register_idx].float_value = g_memory[base_register_idx + offset] << 8;
-//            g_scalar_registers[destination_register_idx].float_value &= g_memory[base_register_idx + offset + 1];
+              g_scalar_registers[destination_register_idx].float_value += g_memory[base_register_idx + offset + 1];
             SetConditionCodeFloat(g_scalar_registers[base_register_idx].float_value, 0);
         }
     }
