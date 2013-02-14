@@ -365,7 +365,7 @@ TraceOp DecodeInstruction(const uint32_t instruction)
 		int destination_register_idx = (instruction & 0x003F0000) >> 16;
 		int idx = (instruction & 0x00C00000) >> 22;
 		int source_register_idx = (instruction & 0x00000F00) >> 8; 
-		ret_trace_op.scalar_registers[0] = destination_register_idx;
+		ret_trace_op.vector_registers[0] = destination_register_idx;
 		ret_trace_op.scalar_registers[1] = source_register_idx;
 		ret_trace_op.scalar_registers[2] = idx;
     }
@@ -375,7 +375,7 @@ TraceOp DecodeInstruction(const uint32_t instruction)
 		int destination_register_idx = (instruction & 0x003F0000) >> 16;
 		int idx = (instruction & 0x00C00000) >> 22;
 		float immediate_value = DecodeBinaryToFloatingPointNumber(instruction & 0x0000FFFF);
-		ret_trace_op.scalar_registers[0] = destination_register_idx;
+		ret_trace_op.vector_registers[0] = destination_register_idx;
 		ret_trace_op.int_value = idx;
 		ret_trace_op.float_value = immediate_value;
     }
@@ -736,8 +736,8 @@ int ExecuteInstruction(const TraceOp &trace_op)
 		int offset = trace_op.int_value;
 		if (source_register_idx < 7)
 			g_memory[base_register_idx + offset] = g_scalar_registers[source_register_idx].int_value;
-		else
-			g_memory[base_register_idx + offset] = g_scalar_registers[source_register_idx].float_value;
+//		else 
+//			g_memory[base_register_idx + offset] = g_scalar_registers[source_register_idx].float_value;
     }
     break;
 
@@ -837,7 +837,8 @@ int ExecuteInstruction(const TraceOp &trace_op)
 		if (g_condition_code_register.int_value < 0) {
 			if (g_condition_code_register.float_value == 1.0) {
 				ret_next_instruction_idx = trace_op.int_value;
-		}
+		    }
+         }
     }
     break;
 
