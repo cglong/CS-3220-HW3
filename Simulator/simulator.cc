@@ -736,8 +736,8 @@ int ExecuteInstruction(const TraceOp &trace_op)
 		int offset = trace_op.int_value;
 		if (source_register_idx < 7)
 			g_memory[base_register_idx + offset] = g_scalar_registers[source_register_idx].int_value;
-	//	else
-		//	g_memory[base_register_idx + offset] = g_scalar_registers[source_register_idx].float_value;
+		else
+			g_memory[base_register_idx + offset] = g_scalar_registers[source_register_idx].float_value;
     }
     break;
 
