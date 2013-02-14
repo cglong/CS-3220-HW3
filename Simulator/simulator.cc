@@ -3,6 +3,13 @@
 #include <sstream>
 #include <vector>
 #include <bitset>
+
+#ifdef __GNUC__
+#include <stdint.h>
+#include <cstring>
+#include <limits.h>
+#endif
+
 #include "simulator.h"
 
 #define DEBUG
