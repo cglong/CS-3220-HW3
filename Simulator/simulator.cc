@@ -746,8 +746,8 @@ int ExecuteInstruction(const TraceOp &trace_op)
 		int source_register_idx = trace_op.scalar_registers[1];
 		int offset = trace_op.int_value;
 		if (source_register_idx < 7) {
-			g_memory[base_register_idx + offset] = g_scalar_registers[source_register_idx].int_value << 8;
-			g_memory[base_register_idx + offset + 1] &= g_scalar_registers[source_register_idx].int_value;
+			g_memory[base_register_idx + offset] = g_scalar_registers[source_register_idx].int_value >> 8;
+			g_memory[base_register_idx + offset + 1] = g_scalar_registers[source_register_idx].int_value & 0xF;
 			SetConditionCodeInt(g_scalar_registers[source_register_idx].int_value, 0);
 		} else {
 //			g_memory[base_register_idx + offset] = g_scalar_registers[source_register_idx].float_value << 8;
