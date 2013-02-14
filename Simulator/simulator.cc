@@ -713,11 +713,11 @@ int ExecuteInstruction(const TraceOp &trace_op)
         int offset = trace_op.int_value;
         if (base_register_idx < 7) {
             g_scalar_registers[destination_register_idx].int_value = g_memory[base_register_idx + offset] << 8;
-//            g_scalar_registers[destination_register_idx].int_value &= g_memory[base_register_idx + offset + 1];
+            g_scalar_registers[destination_register_idx].int_value &= g_memory[base_register_idx + offset + 1];
             SetConditionCodeInt(g_scalar_registers[base_register_idx].int_value, 0);
         } else {
             g_scalar_registers[destination_register_idx].float_value = g_memory[base_register_idx + offset] << 8;
-//            g_scalar_registers[destination_register_idx].float_value &= g_memory[base_register_idx + offset + 1];
+ //           g_scalar_registers[destination_register_idx].float_value &= g_memory[base_register_idx + offset + 1];
             SetConditionCodeFloat(g_scalar_registers[base_register_idx].float_value, 0);
         }
     }
@@ -823,20 +823,13 @@ int ExecuteInstruction(const TraceOp &trace_op)
     case OP_BRN: {
 		if (g_condition_code_register.float_value < 0) {
 			if (g_condition_code_register.int_value == 1) {
-				ret_next_instruction_idx = PC_IDX + trace_op.int_value << 2;
-			}
-			else {
-				ret_next_instruction_idx = PC_IDX;
+				ret_next_instruction_idx = trace_op.int_value;
 			}
 		}
 		
 		if (g_condition_code_register.int_value < 0) {
 			if (g_condition_code_register.float_value == 1.0) {
-				ret_next_instruction_idx = PC_IDX + trace_op.int_value << 2;
-			}
-			else {
-				ret_next_instruction_idx = PC_IDX;
-			}
+				ret_next_instruction_idx = trace_op.int_value;
 		}
     }
     break;
@@ -844,19 +837,13 @@ int ExecuteInstruction(const TraceOp &trace_op)
     case OP_BRZ: {
 		if (g_condition_code_register.float_value < 0) {
 			if (g_condition_code_register.int_value == 2) {
-				ret_next_instruction_idx = PC_IDX + trace_op.int_value << 2;
-			}
-			else {
-				ret_next_instruction_idx = PC_IDX;
+				ret_next_instruction_idx = trace_op.int_value;
 			}
 		}
 		
 		if (g_condition_code_register.int_value < 0) {
 			if (g_condition_code_register.float_value == 2.0) {
-				ret_next_instruction_idx = PC_IDX + trace_op.int_value << 2;
-			}
-			else {
-				ret_next_instruction_idx = PC_IDX;
+				ret_next_instruction_idx = trace_op.int_value;
 			}
 		}
     }
@@ -865,19 +852,13 @@ int ExecuteInstruction(const TraceOp &trace_op)
     case OP_BRP: {
 		if (g_condition_code_register.float_value < 0) {
 			if (g_condition_code_register.int_value == 4) {
-				ret_next_instruction_idx = PC_IDX + trace_op.int_value << 2;
-			}
-			else {
-				ret_next_instruction_idx = PC_IDX;
+				ret_next_instruction_idx = trace_op.int_value;
 			}
 		}
 		
 		if (g_condition_code_register.int_value < 0) {
 			if (g_condition_code_register.float_value == 4.0) {
-				ret_next_instruction_idx = PC_IDX + trace_op.int_value << 2;
-			}
-			else {
-				ret_next_instruction_idx = PC_IDX;
+				ret_next_instruction_idx = trace_op.int_value;
 			}
 		}
     }
@@ -886,19 +867,13 @@ int ExecuteInstruction(const TraceOp &trace_op)
     case OP_BRNZ: {
 		if (g_condition_code_register.float_value < 0) {
 			if (g_condition_code_register.int_value == 1 || g_condition_code_register.int_value == 2) {
-				ret_next_instruction_idx = PC_IDX + trace_op.int_value << 2;
-			}
-			else {
-				ret_next_instruction_idx = PC_IDX;
+				ret_next_instruction_idx = trace_op.int_value;
 			}
 		}
 		
 		if (g_condition_code_register.int_value < 0) {
 			if (g_condition_code_register.float_value == 1.0 || g_condition_code_register.float_value == 2.0) {
-				ret_next_instruction_idx = PC_IDX + trace_op.int_value << 2;
-			}
-			else {
-				ret_next_instruction_idx = PC_IDX;
+				ret_next_instruction_idx = trace_op.int_value;
 			}
 		}
     }
@@ -907,19 +882,13 @@ int ExecuteInstruction(const TraceOp &trace_op)
     case OP_BRNP: {
 		if (g_condition_code_register.float_value < 0) {
 			if (g_condition_code_register.int_value == 1 || g_condition_code_register.int_value == 4) {
-				ret_next_instruction_idx = PC_IDX + trace_op.int_value << 2;
-			}
-			else {
-				ret_next_instruction_idx = PC_IDX;
+				ret_next_instruction_idx = trace_op.int_value;
 			}
 		}
 		
 		if (g_condition_code_register.int_value < 0) {
 			if (g_condition_code_register.float_value == 1.0 || g_condition_code_register.float_value == 4.0) {
-				ret_next_instruction_idx = PC_IDX + trace_op.int_value << 2;
-			}
-			else {
-				ret_next_instruction_idx = PC_IDX;
+				ret_next_instruction_idx = trace_op.int_value;
 			}
 		}
     }
@@ -928,19 +897,13 @@ int ExecuteInstruction(const TraceOp &trace_op)
     case OP_BRZP: {
 		if (g_condition_code_register.float_value < 0) {
 			if (g_condition_code_register.int_value == 2 || g_condition_code_register.int_value == 4) {
-				ret_next_instruction_idx = PC_IDX + trace_op.int_value << 2;
-			}
-			else {
-				ret_next_instruction_idx = PC_IDX;
+				ret_next_instruction_idx = trace_op.int_value;
 			}
 		}
 		
 		if (g_condition_code_register.int_value < 0) {
 			if (g_condition_code_register.float_value == 2.0 || g_condition_code_register.float_value == 4.0) {
-				ret_next_instruction_idx = PC_IDX + trace_op.int_value << 2;
-			}
-			else {
-				ret_next_instruction_idx = PC_IDX;
+				ret_next_instruction_idx = trace_op.int_value;
 			}
 		}
     }
@@ -949,19 +912,13 @@ int ExecuteInstruction(const TraceOp &trace_op)
     case OP_BRNZP: {
 		if (g_condition_code_register.float_value < 0) {
 			if (g_condition_code_register.int_value == 1 || g_condition_code_register.int_value == 2 || g_condition_code_register.int_value == 4) {
-				ret_next_instruction_idx = PC_IDX + trace_op.int_value << 2;
-			}
-			else {
-				ret_next_instruction_idx = PC_IDX;
+				ret_next_instruction_idx = trace_op.int_value;
 			}
 		}
 		
 		if (g_condition_code_register.int_value < 0) {
 			if (g_condition_code_register.float_value == 1.0 || g_condition_code_register.float_value == 2.0 || g_condition_code_register.float_value == 4.0) {
-				ret_next_instruction_idx = PC_IDX + trace_op.int_value << 2;
-			}
-			else {
-				ret_next_instruction_idx = PC_IDX;
+				ret_next_instruction_idx = trace_op.int_value;
 			}
 		}
     }
